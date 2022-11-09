@@ -26,7 +26,7 @@ public class Activity_Login extends AppCompatActivity {
 
         String user = edtUserName.getText().toString();
         String password = edtPassword.getText().toString();
-        if(user.equals("admin") && password.equals("12345678")){
+        if(user.equals("admin") && password.equals("123")){
             txtMessage.setText("");
             Intent intentActivityMenu = new Intent(this, Activity_Menu.class);
             startActivity(intentActivityMenu);

@@ -1,17 +1,23 @@
 package com.example.laboratorio3;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.Button;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Activity_Menu extends AppCompatActivity {
 
+    public final static String EXTRA_POSTULANTES = "EXTRA_POSTULANTES";
     private ArrayList<Postulante> postulantes;
     private Postulante postulante;
 
@@ -22,34 +28,38 @@ public class Activity_Menu extends AppCompatActivity {
 
         postulantes = new ArrayList<>();
 
-        //Se recibe el objeto postulante
-        Bundle objetoPostulante = getIntent().getExtras();
-        if(objetoPostulante != null) {
-            postulantes = (ArrayList<Postulante>) objetoPostulante.getSerializable("postulantes");
-            postulante = (Postulante) objetoPostulante.getSerializable("postulante");
-            postulantes.add(postulante);
-            Toast.makeText(this, "El postulante ha sido registrado", Toast.LENGTH_SHORT).show();
-            for (Postulante p: postulantes) {
-                System.out.println(p);
+        Button btnPostulanteInfo  = findViewById(R.id.button_postulante_info);
+        Button btnPostulanteRegistro = findViewById(R.id.button_postulante_registro);
+
+        btnPostulanteInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentActivityPostulanteInfo = new Intent(getApplicationContext(), Activity_PostulanteInfo.class);
+                intentActivityPostulanteInfo.putParcelableArrayListExtra(EXTRA_POSTULANTES, postulantes);
+                startActivity(intentActivityPostulanteInfo);
             }
-        }
+        });
+
+        btnPostulanteRegistro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentPostulanteRegistro = new Intent(getApplicationContext(), Activity_PostulanteRegistro.class);
+                startForResult.launch(intentPostulanteRegistro);
+            }
+        });
+
     }
 
-    public void goToActivityPostulanteInfo(View view) {
-        Bundle bundleListPostulantes = new Bundle();
-        bundleListPostulantes.putSerializable("postulantes", postulantes);
-
-        Intent intentActivityPostulanteInfo = new Intent(this, Activity_PostulanteInfo.class);
-        intentActivityPostulanteInfo.putExtras(bundleListPostulantes);
-        startActivity(intentActivityPostulanteInfo);
-    }
-
-    public void goToActivityPostulanteRegistro(View view) {
-        Bundle bundleListPostulantes = new Bundle();
-        bundleListPostulantes.putSerializable("postulantes", postulantes);
-
-        Intent intentPostulanteRegistro = new Intent(this, Activity_PostulanteRegistro.class);
-        intentPostulanteRegistro.putExtras(bundleListPostulantes);
-        startActivity(intentPostulanteRegistro);
-    }
+    ActivityResultLauncher<Intent> startForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent intent = result.getData();
+                        Postulante postulante =  intent.getParcelableExtra(Activity_PostulanteRegistro.NEW_POSTULANTE);
+                        postulantes.add(postulante);
+                    }
+                }
+            }
+    );
 }

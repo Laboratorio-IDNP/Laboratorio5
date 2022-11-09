@@ -1,8 +1,12 @@
 package com.example.laboratorio3;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Postulante implements Serializable {
+import androidx.annotation.NonNull;
+
+public class Postulante implements Parcelable {
+
     private String dni;
     private String apellidoPaterno;
     private String apellidoMaterno;
@@ -14,15 +18,27 @@ public class Postulante implements Serializable {
     public Postulante() {
     }
 
-    public Postulante(String dni, String apellidoPaterno, String apellidoMaterno, String nombres, String fechaNacimiento, String colegioPrecedencia, String carreraPostula) {
-        this.dni = dni;
-        this.apellidoPaterno = apellidoPaterno;
-        this.apellidoMaterno = apellidoMaterno;
-        this.nombres = nombres;
-        this.fechaNacimiento = fechaNacimiento;
-        this.colegioPrecedencia = colegioPrecedencia;
-        this.carreraPostula = carreraPostula;
+    protected Postulante(Parcel in) {
+        dni = in.readString();
+        apellidoPaterno = in.readString();
+        apellidoMaterno = in.readString();
+        nombres = in.readString();
+        fechaNacimiento = in.readString();
+        colegioPrecedencia = in.readString();
+        carreraPostula = in.readString();
     }
+
+    public static final Creator<Postulante> CREATOR = new Creator<Postulante>() {
+        @Override
+        public Postulante createFromParcel(Parcel in) {
+            return new Postulante(in);
+        }
+
+        @Override
+        public Postulante[] newArray(int size) {
+            return new Postulante[size];
+        }
+    };
 
     public String getDni() {
         return dni;
@@ -48,6 +64,7 @@ public class Postulante implements Serializable {
         this.apellidoMaterno = apellidoMaterno;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Postulante{" +
@@ -90,5 +107,21 @@ public class Postulante implements Serializable {
 
     public void setCarreraPostula(String carreraPostula) {
         this.carreraPostula = carreraPostula;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(dni);
+        parcel.writeString(apellidoPaterno);
+        parcel.writeString(apellidoMaterno);
+        parcel.writeString(nombres);
+        parcel.writeString(fechaNacimiento);
+        parcel.writeString(colegioPrecedencia);
+        parcel.writeString(carreraPostula);
     }
 }
