@@ -2,7 +2,9 @@ package com.example.laboratorio3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,17 +22,14 @@ public class Activity_PostulanteInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postulante_info);
 
+        Intent intent = getIntent();
+        postulantes = intent.getParcelableArrayListExtra(Activity_Menu.EXTRA_POSTULANTES);
+
         campoDni = (EditText) findViewById(R.id.editTextDNI);
         result = (TextView) findViewById(R.id.textResult);
-        postulantes = new ArrayList<>();
 
-        Bundle objectPostulante = getIntent().getExtras();
-
-        if (objectPostulante != null) {
-            postulantes = (ArrayList<Postulante>) objectPostulante.getSerializable("postulantes");
-        }
         if (postulantes.size() == 0 ) {
-            result.setText("No hay postulantes registrados");
+           result.setText("No hay postulantes registrados");
         }
     }
 

@@ -2,15 +2,18 @@ package com.example.laboratorio3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class Activity_PostulanteRegistro extends AppCompatActivity {
 
+    public final static String NEW_POSTULANTE = "NEW_POSTULANTE";
     private EditText campoDni;
     private EditText campoApellidoPaterno;
     private EditText campoApellidoMaterno;
@@ -23,6 +26,7 @@ public class Activity_PostulanteRegistro extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postulante_registro);
+        Button btnRegistrar = findViewById(R.id.buttonRegistar);
 
         campoDni = (EditText) findViewById(R.id.editTextDni);
         campoApellidoPaterno = (EditText) findViewById(R.id.editTextApellidoPaterno);
@@ -32,41 +36,25 @@ public class Activity_PostulanteRegistro extends AppCompatActivity {
         campoColegioPrecedencia = (EditText) findViewById(R.id.editTextColegioProcedencia);
         campoCarreraPostula = (EditText) findViewById(R.id.editTextCarreraPostula);
 
-    }
+        btnRegistrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Postulante postulante = new Postulante();
 
-    public void registerForActivityResult(View button) {
-        String dni = campoDni.getText().toString();
-        String apellidoPaterno = campoApellidoPaterno.getText().toString();
-        String apellidoMaterno = campoApellidoMaterno.getText().toString();
-        String nombres = campoNombres.getText().toString();
-        String fechaNacimiento = campoFechaNacimiento.getText().toString();
-        String colegioPrecedencia = campoColegioPrecedencia.getText().toString();
-        String carreraPostula = campoCarreraPostula.getText().toString();
+                postulante.setDni(campoDni.getText().toString());
+                postulante.setApellidoPaterno(campoApellidoPaterno.getText().toString());
+                postulante.setApellidoMaterno(campoApellidoMaterno.getText().toString());
+                postulante.setNombres(campoNombres.getText().toString());
+                postulante.setFechaNacimiento(campoFechaNacimiento.getText().toString());
+                postulante.setColegioPrecedencia(campoColegioPrecedencia.getText().toString());
+                postulante.setCarreraPostula(campoCarreraPostula.getText().toString());
 
-        Postulante postulante = new Postulante();
-        postulante.setDni(dni);
-        postulante.setApellidoPaterno(apellidoPaterno);
-        postulante.setApellidoMaterno(apellidoMaterno);
-        postulante.setNombres(nombres);
-        postulante.setFechaNacimiento(fechaNacimiento);
-        postulante.setColegioPrecedencia(colegioPrecedencia);
-        postulante.setCarreraPostula(carreraPostula);
-
-        //Toast.makeText(this, "El postulante ha sido registrado", Toast.LENGTH_SHORT).show();
-
-        //Enviar el postulante creado a la activity Main donde esta la lista de Postulantes
-        Bundle bundleActivityMenu = new Bundle();
-        bundleActivityMenu.putSerializable("postulante", postulante);
-
-        Intent intentActivityMenu = new Intent(this, Activity_Menu.class);
-        intentActivityMenu.putExtras(bundleActivityMenu);
-
-        //Lista de postulantes
-        Bundle listaPostulantes = getIntent().getExtras();
-        intentActivityMenu.putExtras(listaPostulantes);
-
-        //Se envia el intent
-        startActivity(intentActivityMenu);
+                Intent intentActivityMenu = new Intent();
+                intentActivityMenu.putExtra(NEW_POSTULANTE,postulante);
+                setResult(Activity.RESULT_OK, intentActivityMenu);
+                finish();
+            }
+        });
 
     }
 }
